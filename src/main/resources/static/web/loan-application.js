@@ -51,24 +51,25 @@ createApp({
             }
             return null
         },
-        payment() {
-            if (this.amount != null && this.payments != 0) {
-                if (this.loan.name == "Mortgage") {
-                    let interest = this.amount * 1.2
-                    let payment = interest / this.payments
-                    return payment
-                } else if (this.loan.name == "Personal") {
-                    let interest = this.amount * 1.1
-                    let payment = interest / this.payments
-                    return payment
-                } else if (this.loan.name == "Automobile") {
-                    let interest = this.amount * 1.15
-                    let payment = interest / this.payments
-                    return payment
-                }
-            }
-            return 0
-        },
+        // payment() {
+        //     if (this.amount != null && this.payments != 0) {
+        //         if (this.loan.name == "Mortgage") {
+        //             let interest = this.amount * 1.2
+        //             let payment = interest / this.payments
+        //             return payment
+        //         } else if (this.loan.name == "Personal") {
+        //             let interest = this.amount * 1.1
+        //             let payment = interest / this.payments
+        //             return payment
+        //         } else if (this.loan.name == "Automobile") {
+        //             let interest = this.amount * 1.15
+        //             let payment = interest / this.payments
+
+        //             return payment
+        //         }
+        //     }
+        //     return 0
+        // },
         formattedBalance(number) {
             return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'ARS' }).format(number)
         },
@@ -76,6 +77,7 @@ createApp({
             axios.post("/api/loans", { "id": this.loanRequested, "amount": this.amount, "payments": this.payments, "destinationAccountNumber": this.destinationAccountNumber })
                 .then(() => window.location.reload())
                 .catch(error => {
+                    console.error(error);
                     Swal.fire({
                         icon: 'error',
                         title: error.response.data,

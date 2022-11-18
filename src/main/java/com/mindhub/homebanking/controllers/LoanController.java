@@ -3,7 +3,7 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
 import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.repositories.ClientLoanRepository;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.LoanService;
@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,7 +56,7 @@ public class LoanController {
 
             Loan loanRequested = loanService.findById(loanApplicationDTO.getId());
 
-            Set<Loan> loansClientCurrent = clientCurrent.getClientLoans().stream().map(clientLoan -> clientLoan.getLoan()).collect(Collectors.toSet());
+            Set<Loan> loansClientCurrent = clientCurrent.getClientLoans().stream().map(ClientLoan::getLoan).collect(Collectors.toSet());
 
             Account destinationAccount = accountService.findByNumber(loanApplicationDTO.getDestinationAccountNumber());
 
@@ -79,27 +81,17 @@ public class LoanController {
             if (destinationAccount == null) {
                 return new ResponseEntity<>("The destination account does not exist", HttpStatus.FORBIDDEN);
             }
-            if (!destinationAccount.isActive()){
+            if (!destinationAccount.isActive()) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             if (!clientAccounts.contains(destinationAccount)) {
                 return new ResponseEntity<>("The destination account does not belong to the authenticated client", HttpStatus.FORBIDDEN);
             }
 
-            double amountPlusInterest = 0;
+            double amountPlusInterest = (loanApplicationDTO.getAmount() / 100) * loanRequested.getPercentage();
 
-            if(loanRequested.getName().equals("Mortgage")){
-                amountPlusInterest = loanApplicationDTO.getAmount() * loanRequested.getPercentage();
-            }
-            if(loanRequested.getName().equals("Personal")){
-                amountPlusInterest = loanApplicationDTO.getAmount() * loanRequested.getPercentage();
-            }
-            if(loanRequested.getName().equals("Automobile")){
-                amountPlusInterest = loanApplicationDTO.getAmount() * loanRequested.getPercentage();
-            }
-
-            ClientLoan newClientLoan = new ClientLoan(clientCurrent, loanRequested, amountPlusInterest, loanApplicationDTO.getPayments());
-            Transaction accreditation = new Transaction(TransactionType.CREDIT, loanApplicationDTO.getAmount(), loanRequested.getName() + " loan approved", LocalDateTime.now());
+            ClientLoan newClientLoan = new ClientLoan(clientCurrent, loanRequested, amountPlusInterest + loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments());
+            Transaction accreditation = new Transaction(TransactionType.CREDIT, loanApplicationDTO.getAmount(), loanRequested.getName() + " loan approved", LocalDateTime.now(), destinationAccount.getBalance() + loanApplicationDTO.getAmount());
 
             destinationAccount.addTransaction(accreditation);
             destinationAccount.setBalance(destinationAccount.getBalance() + accreditation.getAmount());
@@ -113,5 +105,22 @@ public class LoanController {
 
         return new ResponseEntity<>("You must be authenticated to do this", HttpStatus.FORBIDDEN);
 
+    }
+
+    @PostMapping("/api/loans/create")
+        public ResponseEntity<?> createLoan (Authentication authentication, @RequestParam String name, @RequestParam double maxAmount, @RequestParam double percentage, @RequestParam ArrayList<Integer> payments){
+        Client clientCurrent = clientService.findByEmail(authentication.getName());
+        if (clientCurrent != null){
+
+            String rol = authentication.getAuthorities().toString();
+            if (!rol.contains("ADMIN")){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            List<Integer> hello = payments.stream().collect(Collectors.toList());
+            loanService.saveLoan(new Loan(name,maxAmount,percentage, hello));
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }

@@ -29,11 +29,11 @@ public class HomebankingApplication {
 //			Client client2 = new Client("Alan", "Morua", "alanmorua8@gmail.com", passwordEncoder.encode("alan123"));
 //
 //			Client client3 = new Client("admin", "lastAdmin", "admin@admin.com", passwordEncoder.encode("123"));
-//			Account account1 = new Account( "VIN001", LocalDateTime.now(), 5000);
+//			Account account1 = new Account( "VIN001", LocalDateTime.now(), 5000, AccountType.SAVINGS);
 //
-//			Account account2 = new Account( "VIN002", LocalDateTime.now().plusDays(1), 7500);
+//			Account account2 = new Account( "VIN002", LocalDateTime.now().plusDays(1), 7500,AccountType.CHECKING);
 //
-//			Account account3 = new Account( "VIN003", LocalDateTime.now(), 5000);
+//			Account account3 = new Account( "VIN003", LocalDateTime.now(), 5000, AccountType.SAVINGS);
 //			Transaction transaction1 = new Transaction(TransactionType.DEBIT, -5000, "credit personal", LocalDateTime.now());
 //			Transaction transaction2 = new Transaction(TransactionType.CREDIT, +5000, "Netflix", LocalDateTime.now());
 //			Transaction transaction3 = new Transaction(TransactionType.DEBIT, -5000, "Coffe", LocalDateTime.now());

@@ -5,19 +5,15 @@ createApp({
         return {
             client: {},
             accounts: [],
-            loans: [],
-            loanPayments: [],
-            loan: {},
-            destinationAccountNumber: "",
-            loanRequested: null,
-            payments: 0,
-            amount: null,
+            name: "",
+            maxAmount: 0,
+            percentage: 0,
+            payments: []
         }
     },
     created() {
         this.loadDataClient()
-        this.loanDataLoans()
-        this.getAccounts ()
+        this.getAccounts()
     },
     methods: {
         order(a, b) {
@@ -30,26 +26,12 @@ createApp({
                 })
                 .catch(error => console.log(error));
         },
-        loanDataLoans() {
-            axios.get('/api/loans')
-                .then(response => {
-                    this.loans = response.data.sort(this.order)
-                })
-        },
         getAccounts() {
             axios.get("/api/clients/current/accounts")
                 .then(response => {
                     this.accounts = response.data.sort(this.order)
                 })
                 .catch(error => console.log(error));
-        },
-        loanPaymentsSelected() {
-            if (this.loanRequested != null) {
-                this.loan = this.loans.find(loan => loan.id == this.loanRequested)
-                let payments = this.loan.payments
-                return payments
-            }
-            return null
         },
         payment() {
             if (this.amount != null && this.payments != 0) {
@@ -72,8 +54,8 @@ createApp({
         formattedBalance(number) {
             return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'ARS' }).format(number)
         },
-        loanApplication() {
-            axios.post("/api/loans", { "id": this.loanRequested, "amount": this.amount, "payments": this.payments, "destinationAccountNumber": this.destinationAccountNumber })
+        createLoan() {
+            axios.post("/api/loans/create", { "name": this.name, "maxAmount": this.maxAmount, "percentage": this.percentage, "payments": this.payments })
                 .then(() => window.location.reload())
                 .catch(error => {
                     console.error(error);

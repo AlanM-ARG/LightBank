@@ -32,8 +32,8 @@ public class Pdf {
         cell.setBorderColor(BaseColor.WHITE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
-        Image image = Image.getInstance("F:/Modulo 3 - MindHub/homebanking/src/main/resources/static/web/assets/img/LB-final - copia.png");
-        document.add(image);
+//        Image image = Image.getInstance("F:/Modulo 3 - MindHub/homebanking/src/main/resources/static/web/assets/img/LB-final - copia.png");
+//        document.add(image);
         document.add(table);
 
     }

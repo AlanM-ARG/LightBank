@@ -48,14 +48,14 @@ createApp({
                 })
                 .catch(error => console.log(error));
         },
-        downloadPDF(){
-            axios.get('/api/pdf/generate?startDate=' + this.startDate + '&endDate=' + this.endDate + '&idAccount=' + this.idAccount)
-            .then(response => {
-                console.log(response) 
-                let url = window.URL.createObjectURL(new  Blob([response.data]));
-                window.location.href = url
-            })
-        },
+        // downloadPDF(){
+        //     axios.get('/api/pdf/generate?startDate=' + this.startDate + '&endDate=' + this.endDate + '&idAccount=' + this.idAccount)
+        //     .then(response => {
+        //         console.log(response) 
+        //         let url = window.URL.createObjectURL(new  Blob([response.data]));
+        //         window.location.href = url
+        //     })
+        // },
         createPdf() {
             if(this.startDate.length != 0 && this.endDate.length != 0){
                 return '/api/pdf/generate?startDate=' + this.startDate + '&endDate=' + this.endDate + '&idAccount=' + this.idAccount

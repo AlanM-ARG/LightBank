@@ -143,11 +143,12 @@ header label {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .home .image img {
-    width: 100vw;
+    width: 40vw;
     animation: float 3s linear infinite;
 }
 
@@ -313,13 +314,7 @@ header label {
 }
 
 @media (max-width: 768px) {
-    .home .image img{
-    width: 40vw;
-    }
-    .home{
-    flex-direction: row;
-    flex-wrap: no-wra;
-    }
+
     header .navbar {
         position: absolute;
         top: 100%;
@@ -354,6 +349,15 @@ header label {
 @media (max-width: 450px) {
     html {
         font-size: 50%;
+    }
+
+    .home .image img {
+        width: 100vw;
+    }
+    
+    .home {
+        flex-direction: column-reverse;
+        flex-wrap: wrap;
     }
 
     .about .column .content .buttons a {

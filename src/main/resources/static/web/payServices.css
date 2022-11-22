@@ -192,9 +192,6 @@
     border-radius: 1rem;
 }
 
-/* .cardScale {
-    transform: scale(.6324);
-} */
 
 .card__container {
     display: flex;
@@ -569,7 +566,7 @@
         padding-bottom: 0 !important;
     }
 
-    .card__container {
+    .cardScale {
         transform: scale(0.8) !important;
     }
 }
@@ -584,7 +581,7 @@
         padding-bottom: 0 !important;
     }
 
-    .card__container {
+    .cardScale {
         transform: scale(1) !important;
     }
 }

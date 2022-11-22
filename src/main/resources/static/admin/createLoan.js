@@ -33,30 +33,12 @@ createApp({
                 })
                 .catch(error => console.log(error));
         },
-        payment() {
-            if (this.amount != null && this.payments != 0) {
-                if (this.loan.name == "Mortgage") {
-                    let interest = this.amount * 1.2
-                    let payment = interest / this.payments
-                    return payment
-                } else if (this.loan.name == "Personal") {
-                    let interest = this.amount * 1.1
-                    let payment = interest / this.payments
-                    return payment
-                } else if (this.loan.name == "Automobile") {
-                    let interest = this.amount * 1.15
-                    let payment = interest / this.payments
-                    return payment
-                }
-            }
-            return 0
-        },
         formattedBalance(number) {
             return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'ARS' }).format(number)
         },
         createLoan() {
             axios.post("/api/loans/create", "name=" + this.name + "&maxAmount=" + this.maxAmount + "&percentage=" + this.percentage + "&payments=" + this.payments)
-                .then(() => window.location.reload())
+                .then(response => console.log(response))
                 .catch(error => {
                     console.error(error);
                     Swal.fire({

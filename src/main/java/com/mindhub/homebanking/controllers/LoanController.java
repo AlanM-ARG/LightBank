@@ -108,19 +108,20 @@ public class LoanController {
     }
 
     @PostMapping("/api/loans/create")
-        public ResponseEntity<?> createLoan (Authentication authentication, @RequestParam String name, @RequestParam double maxAmount, @RequestParam double percentage, @RequestParam ArrayList<Integer> payments){
+    public ResponseEntity<?> createLoan(Authentication authentication, @RequestParam String name, @RequestParam double maxAmount, @RequestParam double percentage, @RequestParam ArrayList<Integer> payments) {
         Client clientCurrent = clientService.findByEmail(authentication.getName());
-        if (clientCurrent != null){
-
+        if (clientCurrent != null) {
             String rol = authentication.getAuthorities().toString();
-            if (!rol.contains("ADMIN")){
+            if (!rol.contains("ADMIN")) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             List<Integer> hello = payments.stream().collect(Collectors.toList());
-            loanService.saveLoan(new Loan(name,maxAmount,percentage, hello));
+            loanService.saveLoan(new Loan(name, maxAmount, percentage, hello));
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
+
 }

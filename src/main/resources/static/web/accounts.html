@@ -92,6 +92,14 @@
                             <span class="title">Loan Application</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="./payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="allContent d-flex flex-column align-items-center flex-wrap gap-4">
@@ -110,9 +118,12 @@
                             <div>
                                 <h5 class="mb-2">Balance: <span class="d-block fw-bold">$
                                         {{formattedBalance(account.balance).split("A")[0]}}</span></h5>
-                                <h5>Date of creation: <span
+                                <h5 class="mb-2">Date of creation: <span
                                         class="d-block fw-bold">{{account.creationDate.split("T")[0]}}</span></h5>
-                                    <a class="buttonTransactions text-decoration-none" :href="'./account.html?id=' + account.id">Transactions</a>
+                                <h5>Type: <span class="fw-bold">
+                                        {{account.accountType}}</span></h5>
+                                <a class=" buttonTransactions text-decoration-none "
+                                    :href="'./account.html?id=' + account.id">Transactions</a>
                             </div>
                         </span>
                         <h3 class="h3CardsAnimation">{{account.number}}</h3>

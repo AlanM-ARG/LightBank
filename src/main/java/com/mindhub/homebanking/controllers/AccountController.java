@@ -2,6 +2,7 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
+import com.mindhub.homebanking.models.AccountType;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.services.AccountService;
@@ -43,18 +44,23 @@ public class AccountController {
 
     @GetMapping("/api/clients/current/accounts")
     public List<AccountDTO> accountsCurrents(Authentication authentication) {
-        return clientService.findByEmail(authentication.getName()).getAccountsActives().stream().map(account -> new AccountDTO(account)).collect(toList());
+        return clientService.findByEmail(authentication.getName()).getAccountsActives().stream().map(AccountDTO::new).collect(toList());
     }
 
     @PostMapping("/api/clients/current/accounts")
-    public ResponseEntity<?> createAccount(Authentication authentication) {
+    public ResponseEntity<?> createAccount(Authentication authentication, @RequestParam AccountType accountType) {
 
         Client clientCurrent = clientService.findByEmail(authentication.getName());
+
+
 
         if (clientCurrent != null) {
 
             if (clientCurrent.getAccountsActives().size() >= 3) {
                 return new ResponseEntity<>("You can not have more than 3 accounts", HttpStatus.FORBIDDEN);
+            }
+            if (accountType == null){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
             Set<String> accountsNumber = accountService.getAccountsNumbers();
@@ -63,7 +69,7 @@ public class AccountController {
                 randomNumber = (long) (Math.random() * (100000000 - 1) + 1);
             } while (accountsNumber.contains("VIN" + randomNumber));
             String accountNumber = "VIN" + randomNumber;
-            Account accountCreated = new Account(accountNumber, LocalDateTime.now(), 0);
+            Account accountCreated = new Account(accountNumber, LocalDateTime.now(), 0, accountType);
 
             clientCurrent.addAccount(accountCreated);
 

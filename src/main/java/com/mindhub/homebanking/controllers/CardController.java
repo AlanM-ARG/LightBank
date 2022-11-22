@@ -1,16 +1,22 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.CardDTO;
+import com.mindhub.homebanking.dtos.PayServicesDTO;
 import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.CardService;
 import com.mindhub.homebanking.services.ClientService;
+import com.mindhub.homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,6 +34,11 @@ public class CardController {
     @Autowired
     ClientService clientService;
 
+    @Autowired
+    TransactionService transactionService;
+
+    @Autowired
+    AccountService accountService;
 
     @GetMapping("/api/cards")
     public List<CardDTO> getCardsDTO() {
@@ -70,7 +81,7 @@ public class CardController {
     }
 
     @PatchMapping("/api/clients/current/cards/{id}")
-    public ResponseEntity<?> disableCard(Authentication authentication, @PathVariable Long id){
+    public ResponseEntity<?> disableCard(Authentication authentication, @PathVariable Long id) {
 
         Client clientCurrent = clientService.findByEmail(authentication.getName());
 
@@ -80,13 +91,13 @@ public class CardController {
 
             Card cardSelected = cardService.getCard(id);
 
-            if(id == null || id <= 0){
+            if (id == null || id <= 0) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            if (cardSelected == null){
+            if (cardSelected == null) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            if (!cardsActiveClient.contains(cardSelected)){
+            if (!cardsActiveClient.contains(cardSelected)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             cardSelected.setActive(false);
@@ -98,6 +109,56 @@ public class CardController {
 
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
+    }
+
+    @Transactional
+    @PostMapping("/api/cards/pay")
+    public ResponseEntity<?> payService(Authentication authentication, @RequestBody PayServicesDTO payServicesDTO) {
+
+        Client clientCurrent = clientService.findByEmail(authentication.getName());
+
+        if (clientCurrent != null) {
+            Set<Account> clientCurrentAccounts = clientCurrent.getAccountsActives().stream().filter(account -> account.getBalance() >= payServicesDTO.getAmount()).collect(Collectors.toSet());
+            Set<Card> clientCurrentCards = clientCurrent.getCardsActives();
+
+            Card cardUsed = cardService.findByNumber(payServicesDTO.getCardNumber());
+            if (clientCurrentAccounts.isEmpty()) {
+                return new ResponseEntity<>("You do not have accounts with sufficient balance to carry out this operation.",HttpStatus.FORBIDDEN);
+            }
+            if (clientCurrentCards.isEmpty()){
+                return new ResponseEntity<>("No active credit cards",HttpStatus.FORBIDDEN);
+            }
+            if (cardUsed == null){
+                return new ResponseEntity<>("No card with that number was found.",HttpStatus.FORBIDDEN);
+            }
+            if (!clientCurrentCards.contains(cardUsed)){
+                return new ResponseEntity<>("Card does not belong to the authenticated customer",HttpStatus.FORBIDDEN);
+            }
+            if (!cardUsed.getCvv().equals(payServicesDTO.getCardCvv())){
+                return new ResponseEntity<>("The security code is incorrect",HttpStatus.FORBIDDEN);
+            }
+            if (cardUsed.getThruDate().isBefore(LocalDate.now())){
+                return new ResponseEntity<>("Card is expired",HttpStatus.FORBIDDEN);
+            }
+            Account firstsAccount = clientCurrent.getAccountsActives().stream().min(Comparator.comparing(Account::getId)).orElse(null);
+
+            if (firstsAccount == null) {
+                return new ResponseEntity<>("No account available",HttpStatus.FORBIDDEN);
+            }
+            if (!clientCurrentAccounts.contains(firstsAccount)){
+                return new ResponseEntity<>("The selected account does not belong to the authenticated customer",HttpStatus.FORBIDDEN);
+            }
+
+            Transaction debitTransaction = new Transaction(TransactionType.DEBIT, -payServicesDTO.getAmount(), payServicesDTO.getDescription(), LocalDateTime.now(), firstsAccount.getBalance() - payServicesDTO.getAmount());
+            firstsAccount.addTransaction(debitTransaction);
+            firstsAccount.setBalance(firstsAccount.getBalance() - payServicesDTO.getAmount());
+            transactionService.saveTransaction(debitTransaction);
+            accountService.saveAccount(firstsAccount);
+
+            return new ResponseEntity<>("Operation completed",HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("You must be authenticated to do this.",HttpStatus.FORBIDDEN);
     }
 
 }

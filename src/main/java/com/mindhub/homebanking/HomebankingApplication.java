@@ -1,5 +1,6 @@
 package com.mindhub.homebanking;
 
+import com.itextpdf.text.DocumentException;
 import com.mindhub.homebanking.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -8,20 +9,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.FileNotFoundException;
+
 @SpringBootApplication
 public class HomebankingApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		SpringApplication.run(HomebankingApplication.class, args);
 
 
 	}
 
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) throws DocumentException, FileNotFoundException {
 		return args -> {
 
 //			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("melba123") );
@@ -29,11 +33,11 @@ public class HomebankingApplication {
 //			Client client2 = new Client("Alan", "Morua", "alanmorua8@gmail.com", passwordEncoder.encode("alan123"));
 //
 //			Client client3 = new Client("admin", "lastAdmin", "admin@admin.com", passwordEncoder.encode("123"));
-//			Account account1 = new Account( "VIN001", LocalDateTime.now(), 5000);
+//			Account account1 = new Account( "VIN001", LocalDateTime.now(), 5000, AccountType.SAVINGS);
 //
-//			Account account2 = new Account( "VIN002", LocalDateTime.now().plusDays(1), 7500);
+//			Account account2 = new Account( "VIN002", LocalDateTime.now().plusDays(1), 7500,AccountType.CHECKING);
 //
-//			Account account3 = new Account( "VIN003", LocalDateTime.now(), 5000);
+//			Account account3 = new Account( "VIN003", LocalDateTime.now(), 5000, AccountType.SAVINGS);
 //			Transaction transaction1 = new Transaction(TransactionType.DEBIT, -5000, "credit personal", LocalDateTime.now());
 //			Transaction transaction2 = new Transaction(TransactionType.CREDIT, +5000, "Netflix", LocalDateTime.now());
 //			Transaction transaction3 = new Transaction(TransactionType.DEBIT, -5000, "Coffe", LocalDateTime.now());

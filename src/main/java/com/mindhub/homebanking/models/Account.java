@@ -30,6 +30,8 @@ public class Account {
 
     private boolean active = true;
 
+    private AccountType accountType;
+
     public Account() {
     }
 
@@ -37,6 +39,13 @@ public class Account {
         this.number = number;
         this.creationDate = creationDate;
         this.balance = balance;
+    }
+
+    public Account(String number, LocalDateTime creationDate, double balance, AccountType accountType) {
+        this.number = number;
+        this.creationDate = creationDate;
+        this.balance = balance;
+        this.accountType = accountType;
     }
 
     public long getId() {
@@ -75,14 +84,6 @@ public class Account {
         return transactions;
     }
 
-    public Set<Transaction> getTransactionsActives() {
-        return transactions.stream().filter(transaction -> transaction.isActive()).collect(Collectors.toSet());
-    }
-
-    public Set<Transaction> getTransactionsNoActives() {
-        return transactions.stream().filter(transaction -> !transaction.isActive()).collect(Collectors.toSet());
-    }
-
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
     }
@@ -97,6 +98,22 @@ public class Account {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
+
+    public Set<Transaction> getTransactionsActives() {
+        return transactions.stream().filter(transaction -> transaction.isActive()).collect(Collectors.toSet());
+    }
+
+    public Set<Transaction> getTransactionsNoActives() {
+        return transactions.stream().filter(transaction -> !transaction.isActive()).collect(Collectors.toSet());
     }
 
     public void addTransaction(Transaction transaction) {
@@ -114,6 +131,7 @@ public class Account {
                 ", creationDate=" + creationDate +
                 ", balance=" + balance +
                 ", active=" + active +
+                ", accountType=" + accountType +
                 '}';
     }
 }

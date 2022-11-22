@@ -87,6 +87,14 @@
                             <span class="title">Loan Application</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="./payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="allContent d-flex flex-column align-items-center gap-3">
@@ -127,7 +135,7 @@
                                 </div>
                                 <div class="card__number"
                                     :class="card.color == 'GOLD'? 'colorGOLD' : card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
-                                    {{card.number.replaceAll("-", " ")}}
+                                    {{card.number}}
                                 </div>
                                 <div class="card__payment d-flex flex-column">
                                     <img src="./assets/img/visa-logo-removebg-preview.png" style="width: 50px;" alt="">
@@ -223,7 +231,7 @@
                                 </div>
                                 <div class="card__number"
                                     :class="card.color == 'GOLD'? 'colorGOLD' : card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
-                                    {{card.number.replaceAll("-", " ")}}
+                                    {{card.number}}
                                 </div>
                                 <div class="card__payment d-flex flex-column">
                                     <img src="./assets/img/visa-logo-removebg-preview.png" style="width: 50px;" alt="">

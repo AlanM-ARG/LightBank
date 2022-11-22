@@ -8,12 +8,16 @@ createApp({
             transactionMore: {},
             client: {},
             error: "",
-            account: {}
+            account: {},
+            idAccount: "",
+            startDate: "",
+            endDate: "",
         }
     },
     created() {
-        const urlParams = new URLSearchParams(window.location.search)
-        const id = urlParams.get('id')
+        let urlParams = new URLSearchParams(window.location.search)
+        let id = urlParams.get('id')
+        this.idAccount = id
         this.loadData('/api/accounts/' + id)
         this.loadDataClient()
         this.getAccounts()
@@ -44,11 +48,25 @@ createApp({
                 })
                 .catch(error => console.log(error));
         },
+        downloadPDF(){
+            axios.get('/api/pdf/generate?startDate=' + this.startDate + '&endDate=' + this.endDate + '&idAccount=' + this.idAccount)
+            .then(response => {
+                console.log(response) 
+                let url = window.URL.createObjectURL(new  Blob([response.data]));
+                window.location.href = url
+            })
+        },
+        createPdf() {
+            if(this.startDate.length != 0 && this.endDate.length != 0){
+                return '/api/pdf/generate?startDate=' + this.startDate + '&endDate=' + this.endDate + '&idAccount=' + this.idAccount
+            }
+            return '/api/pdf/generate/all?idAccount=' + this.idAccount
+        },
         formattedBalance(number) {
             return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'ARS' }).format(number)
         },
-        findTransactionById(ID) {
-            this.transactionMore = this.transactions.find(transaction => transaction.id == ID)
+        findTransactionById(id) {
+            this.transactionMore = this.transactions.find(transaction => transaction.id == id)
         },
         logout() {
             axios.post('/api/logout').then(() => window.location.href = '/index.html')

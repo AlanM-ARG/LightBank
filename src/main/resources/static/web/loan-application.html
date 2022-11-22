@@ -90,6 +90,14 @@
                             <span class="title">Loan Application</span>
                         </a>
                     </li>
+                    <li class="list">
+                        <a href="./payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="allContent d-flex flex-column align-items-center">
@@ -133,8 +141,9 @@
                             </div>
                         </div>
                         <div class="inputfield">
-                            <label class="text-white" v-show="amount != null && payments != 0">{{payments}} fixed payments of $
-                                {{formattedBalance(((amount * loan.percentage) / payments)).split("A")[0]}} each.</label>
+                            <label class="text-white" v-show="amount != null && payments != 0">{{payments}} fixed
+                                payments of $
+                                {{formattedBalance(((((amount / 100) * loan.percentage) + amount) / payments)).split("A")[0]}}each. %{{loan.percentage}} interest rate applied.</label>
                         </div>
                         <div class="inputfield d-flex align-items-center justify-content-center">
                             <button class="btn" type="submit">
@@ -154,6 +163,14 @@
                         </div>
                     </div>
                 </form>
+                <button v-show="client.admin" class="admin">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z"></path>
+                            <path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"></path>
+                        </svg> <a class="text-decoration-none text-white" href="../admin/createLoan.html">Create Loan type</a>
+                    </span>
+                </button>
             </div>
         </main>
     </div>

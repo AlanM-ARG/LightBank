@@ -1,13 +1,13 @@
-package com.mindhub.homebanking;
+// package com.mindhub.homebanking;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class HomebankingApplicationTests {
+// @SpringBootTest
+// class HomebankingApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }

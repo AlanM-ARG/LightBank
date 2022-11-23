@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../web/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:900" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <link rel="shortcut icon" href="../web/assets/img/favicon-removebg-preview.png" type="image/x-icon">
+    <title>Loan Application</title>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <a href="#"><img class="logo" src="../web/assets/img/LB-final.png" alt="LB"></a>
+            <h1 class="h1Light">LIGHT<span class="h1Bank">BANK</span></h1>
+            <a href="#" class="logoutButton" v-on:click="logout()">
+                <ion-icon name="log-out-outline"></ion-icon><span>Logout</span>
+            </a>
+        </header>
+        <main class="d-flex justify-content-end align-items-center pb-0">
+            <img class="backgroundImage" src="../web/assets/img/imagen.svg" alt="animation">
+            <div class="sideBar">
+                <ul>
+                    <li class="list">
+                        <a v-on:click="logout()">
+                            <span class="icon">
+                                <ion-icon name="home-outline"></ion-icon>
+                            </span>
+                            <span class="title">Home</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="../web/accounts.html">
+                            <span class="icon">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </span>
+                            <span class="title">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="list transfers">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="icon transfer"><img src="../web/assets/img/transferencia-de-dinero.png"
+                                    alt="transfer"></span>
+                            <span class="title">Transactions</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-for="account in accounts"><a
+                                    class="dropdown-item d-flex justify-content-start align-items-center"
+                                    :href="'../web/account.html?id=' + account.id">
+                                    <ion-icon name="person-outline"></ion-icon>{{account.number}}
+                                </a></li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="../web/cards.html">
+                            <span class="icon">
+                                <ion-icon name="card-outline"></ion-icon>
+                            </span>
+                            <span class="title">Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="../web/create-cards.html">
+                            <span class="icon cardPlus">
+                                <img src="../web/assets/img/pago.png" alt="">
+                            </span>
+                            <span class="title">Create Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="../web/transfer.html">
+                            <span class="icon cardPlus">
+                                <img src="../web/assets/img/money.png" alt="">
+                            </span>
+                            <span class="title">Transfer</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="../web/loan-application.html">
+                            <span class="icon cardPlus">
+                                <img src="../web/assets/img/loan.png" alt="">
+                            </span>
+                            <span class="title">Loan Application</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="../web/payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="allContent d-flex flex-column align-items-center">
+                <h2 class="mt-4">Loan Application</h2>
+                <form class="formBorder" @submit.prevent="createLoan()">
+                    <div class="form">
+                        <div class="inputfield">
+                            <label>Name of Loan:</label>
+                            <input v-model="name" type="text" class="input">
+                        </div>
+                        <div class="inputfield">
+                            <label>Max amount of loan:</label>
+                            <input v-model="maxAmount" type="number" min="0" max="1000000"
+                                placeholder="Max Amount: $ 1.000.000,0" class=" input">
+                        </div>
+                        <div class="inputfield">
+                            <label>Loan interest percentage:</label>
+                            <input v-model="percentage" type="number" min="0" max="50" placeholder="Max: %50"
+                                class="input">
+                        </div>
+                        <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
+                            <label class=" w-100 text-white">Select your loan payments:</label>
+                            <div>
+                                <input class="input" type="checkbox" id="6" value="6" v-model="payments">
+                                <label class="text-white m-1" for="6">6</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="9" value="9" v-model="payments">
+                                <label class="text-white m-1" for="9">9</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="12" value="12" v-model="payments">
+                                <label class="text-white m-1" for="12">12</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="18" value="18" v-model="payments">
+                                <label class="text-white m-1" for="18">18</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="24" value="24" v-model="payments">
+                                <label class="text-white m-1" for="24">24</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="36" value="36" v-model="payments">
+                                <label class="text-white m-1" for="36">36</label>
+                            </div>
+                            <div>
+                                <input class="input" type="checkbox" id="48" value="48" v-model="payments">
+                                <label class="text-white m-1" for="48">48</label>
+                            </div>
+                        </div>
+                        <div class="inputfield d-flex align-items-center justify-content-center mt-3">
+                            <button class="createLoan" type="submit">
+                                Create
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script src="./createLoan.js"></script>
+
+</body>
+
+
+
+
+
+
+</html>

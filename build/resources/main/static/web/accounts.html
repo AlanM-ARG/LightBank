@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="shortcut icon" href="./assets/img/favicon-removebg-preview.png" type="image/x-icon">
+    <title>Your accounts</title>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <a href="#"><img class="logo" src="./assets/img/LB-final.png" alt="LB"></a>
+            <h1 class="h1Light">LIGHT<span class="h1Bank">BANK</span></h1>
+            <a href="#" class="logoutButton" v-on:click="logout()">
+                <ion-icon name="log-out-outline"></ion-icon><span>Logout</span>
+            </a>
+        </header>
+        <main class="d-flex justify-content-end align-items-center">
+            <img class="backgroundImage" src="./assets/img/imagen.svg" alt="animation">
+            <div class="sideBar">
+                <ul>
+                    <li class="list">
+                        <a v-on:click="logout()">
+                            <span class="icon">
+                                <ion-icon name="home-outline"></ion-icon>
+                            </span>
+                            <span class="title">Home</span>
+                        </a>
+                    </li>
+                    <li class="list active">
+                        <a href="#">
+                            <span class="icon">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </span>
+                            <span class="title">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="list transfers">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="icon transfer"><img src="./assets/img/transferencia-de-dinero.png"
+                                    alt="transfer"></span>
+                            <span class="title">Transactions</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-for="account in accounts"><a
+                                    class="dropdown-item d-flex justify-content-start align-items-center"
+                                    :href="'./account.html?id=' + account.id">
+                                    <ion-icon name="person-outline"></ion-icon>{{account.number}}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="./cards.html">
+                            <span class="icon">
+                                <ion-icon name="card-outline"></ion-icon>
+                            </span>
+                            <span class="title">Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./create-cards.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/pago.png" alt="">
+                            </span>
+                            <span class="title">Create Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./transfer.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/money.png" alt="">
+                            </span>
+                            <span class="title">Transfer</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./loan-application.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/loan.png" alt="">
+                            </span>
+                            <span class="title">Loan Application</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="allContent d-flex flex-column align-items-center flex-wrap gap-4">
+                <h2 v-if="accounts.length != 0" class="mt-4">Your Accounts, {{client.firstName}}:</h2>
+                <h2 class="mt-4" v-else>You do not have accounts!</h2>
+                <button class="create" v-on:click="createAccount()" v-if="accounts.length != 3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span> Create Account
+                </button>
+                <div class="d-flex accountsConteiner flex-wrap w-100">
+                    <div class="cardsAnimation" v-for="account in accounts">
+                        <div class="blob"></div>
+                        <span class="img">
+                            <div>
+                                <h5 class="mb-2">Balance: <span class="d-block fw-bold">$
+                                        {{formattedBalance(account.balance).split("A")[0]}}</span></h5>
+                                <h5 class="mb-2">Date of creation: <span
+                                        class="d-block fw-bold">{{account.creationDate.split("T")[0]}}</span></h5>
+                                <h5>Type: <span class="fw-bold">
+                                        {{account.accountType}}</span></h5>
+                                <a class=" buttonTransactions text-decoration-none "
+                                    :href="'./account.html?id=' + account.id">Transactions</a>
+                            </div>
+                        </span>
+                        <h3 class="h3CardsAnimation">{{account.number}}</h3>
+                        <p>
+                            <button v-on:click="disableAccount(account.id)" class="buttonRemove">
+                                Delete Account
+                            </button>
+                        </p>
+                    </div>
+                </div>
+                <h2 class="text-center" v-if="loans.length">Your Loans, {{client.firstName}}!</h2>
+                <h2 class="text-center" v-else>You do not have loans 😢</h2>
+                <button class="create" v-show="loans.length != 3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span> <a class="text-decoration-none text-white" href="./loan-application.html">Loan
+                        Applycation</a>
+                </button>
+                <div class="d-flex w-100 loansConteiner flex-wrap">
+                    <div class="cardsAnimation" v-for="loan in loans" v-if="loans.length">
+                        <div class="blob"></div>
+                        <span class="img">
+                            <div>
+                                <h5 class="mb-2">Amount: $ <span
+                                        class="d-block fw-bold">{{formattedBalance(loan.amount).split("A")[0]}}</span>
+                                </h5>
+                                <h5>Payments: <span class="d-block fw-bold">{{loan.payment}}</span></p>
+                            </div>
+                        </span>
+                        <h3 class="h3CardsAnimation">{{loan.name}}</h3>
+                        <p class="fs-5">
+                            {{loan.name}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="./accounts.js"></script>
+</body>
+
+</html>

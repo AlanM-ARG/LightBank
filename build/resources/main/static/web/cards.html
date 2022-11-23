@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="shortcut icon" href="./assets/img/favicon-removebg-preview.png" type="image/x-icon">
+    <title>Cards</title>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <a href="#"><img class="logo" src="./assets/img/LB-final.png" alt="LB"></a>
+            <h1 class="h1Light">LIGHT<span class="h1Bank">BANK</span></h1>
+            <a href="#" class="logoutButton" v-on:click="logout()">
+                <ion-icon name="log-out-outline"></ion-icon><span>Logout</span>
+            </a>
+        </header>
+        <main class="d-flex justify-content-end align-items-center">
+            <img class="backgroundImage" src="./assets/img/imagen.svg" alt="animation">
+            <div class="sideBar">
+                <ul>
+                    <li class="list">
+                        <a v-on:click="logout()">
+                            <span class="icon">
+                                <ion-icon name="home-outline"></ion-icon>
+                            </span>
+                            <span class="title">Home</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./accounts.html">
+                            <span class="icon">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </span>
+                            <span class="title">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="list transfers">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="icon transfer"><img src="./assets/img/transferencia-de-dinero.png"
+                                    alt="transfer"></span>
+                            <span class="title">Transactions</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-for="account in accounts" class="m-0"><a
+                                    class="dropdown-item d-flex justify-content-start align-items-center"
+                                    :href="'./account.html?id=' + account.id">
+                                    <ion-icon name="person-outline"></ion-icon>{{account.number}}
+                                </a></li>
+                        </ul>
+                    </li>
+                    <li class="list active">
+                        <a href="#">
+                            <span class="icon">
+                                <ion-icon name="card-outline"></ion-icon>
+                            </span>
+                            <span class="title">Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./create-cards.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/pago.png" alt="">
+                            </span>
+                            <span class="title">Create Cards</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./transfer.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/money.png" alt="">
+                            </span>
+                            <span class="title">Transfer</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./loan-application.html">
+                            <span class="icon cardPlus">
+                                <img src="./assets/img/loan.png" alt="">
+                            </span>
+                            <span class="title">Loan Application</span>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="./payServices.html">
+                            <span class="icon cardPlus">
+                                <ion-icon name="cash-outline"></ion-icon>
+                            </span>
+                            <span class="title">Pay Services</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="allContent d-flex flex-column align-items-center gap-3">
+                <h2 class="mt-4" v-if="cards.length != 0">Your cards, {{client.firstName}}!</h2>
+                <h3 class="h3Cards" v-if="cards.length != 0">
+                    <ion-icon name="arrow-down-outline"></ion-icon>Debits Cards<ion-icon name="arrow-down-outline">
+                    </ion-icon>
+                </h3>
+                <div class="cardScale d-flex flex-column justify-content-center align-items-center gap-3"
+                    v-for="card in cardsDebit">
+                    <button class="create w-50" v-on:click="disableCard(card.id)" v-if="cardsDebit.length != 0">Delete
+                        Card</button>
+                    <div class="cardContainer mb-3">
+                        <div class="card__container">
+                            <div class="card__front" :id="'cardFront-' + card.id">
+                                <div class="card__front--bg"
+                                    :class="card.color == 'GOLD'? 'bgGOLD': card.color == 'SILVER'? 'bgSILVER' : 'bgTITANIUM' ">
+                                    <div class="front--bg--s1"
+                                        :class="card.color == 'GOLD'? 'borderGOLD': card.color == 'SILVER'? 'borderSILVER' : 'borderTITANIUM'  ">
+                                    </div>
+                                </div>
+                                <div class="card__brand" style="margin-top: 10px;">
+                                    <span class="card__brand--logo">
+                                        <img src="./assets/img/LB-removebg-preview (2).png" width="30" alt="LB">
+                                    </span>
+                                    <p class="text-danger fw-bold" v-show="date(card.thruDate)">Expired</p>
+                                    <span class="card__brand--name font-normal">
+                                        LIGHTBANK
+                                    </span>
+                                </div>
+                                <div class="card__chip">
+                                    <img src="./assets/img/chip-removebg-preview.png" alt="chip">
+                                </div>
+                                <div class="card__extra">
+                                    <div class="card__extra--contactless">
+                                        <ion-icon name="wifi-sharp" style="font-size: 30px;"></ion-icon>
+                                    </div>
+                                </div>
+                                <div class="card__number"
+                                    :class="card.color == 'GOLD'? 'colorGOLD' : card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
+                                    {{card.number}}
+                                </div>
+                                <div class="card__payment d-flex flex-column">
+                                    <img src="./assets/img/visa-logo-removebg-preview.png" style="width: 50px;" alt="">
+                                    <span style="width: 50px; margin-left:5px;font-size: 12px;"
+                                        class="text-white">{{card.type}}</span>
+                                </div>
+                                <div class="card__user">
+                                    <span class="card__user--name  m-2">{{card.cardHolder}}</span>
+                                    <div class="card__user--valid">
+                                        <div class="card__user--valid-date  ">From. {{formatDate(card.fromDate)}}
+                                        </div>
+                                        <div class="card__user--valid-date " style="line-height: 30px;">Thru.
+                                            {{formatDate(card.thruDate)}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card__back"
+                                :class="card.color == 'GOLD'? 'bgGOLD': card.color == 'SILVER'? 'bgSILVER' : 'bgTITANIUM'  "
+                                :id="'cardBack-' + card.id">
+                                <div class="card__plast">
+                                </div>
+                                <div class="card__contact">
+                                    <p class="card__contact--txt m-0">Customer Service: 0855 0055 0055</p>
+                                    <p class="card__contact--txt m-0">www.lightbank.com</p>
+                                </div>
+                                <div class="card__strip"></div>
+                                <div class="card__company">
+                                    <div class="card__company--address">7741 Hayvenhurst Ave, Van Nuys, CA 91406 Los
+                                        Angeles
+                                        /
+                                        Californiya - USA</div>
+                                    <div class="card__company--msg">Lorem ipsum dolor sit amet consectetur adipisicing
+                                        elit.
+                                    </div>
+                                </div>
+                                <div class="card__cvc">
+                                    <div class="card__cvc--strip">
+                                    </div>
+                                    <span class="card__cvc--num"><span class="card__cvc--txt">{{card.cvv}}</span> CVV
+                                    </span>
+                                </div>
+                                <p class="card__cvc--warning"> NOT VALİD WİTHOUT AUTHORİZED SİGNATURE</p>
+                                <div class="card__stamp"></div>
+                                <div class="card--hr"></div>
+                                <div class="card__back--bottom"
+                                    :class="card.color == 'GOLD'? 'colorGOLD': card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
+                                    <p class="company-dec m-0">
+                                        LB
+                                    </p>
+                                    <p class="card--business m-0">
+                                        LIGHTBANK
+                                    </p>
+                                </div>
+                                <div class="card__back--shape"
+                                    :class="card.color == 'GOLD'? 'borderGOLD' : card.color == 'SILVER'? 'borderSILVER' : 'borderTITANIUM'  ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="h3Cards" v-if="cards.length != 0">
+                    <ion-icon name="arrow-down-outline"></ion-icon>Credits Cards<ion-icon name="arrow-down-outline">
+                    </ion-icon>
+                </h3>
+                <div class="cardScale d-flex flex-column justify-content-center align-items-center gap-3"
+                    v-for="card in cardsCredit">
+                    <button class="create w-50" v-on:click="disableCard(card.id)" v-if="cardsCredit.length != 0">Delete
+                        Card</button>
+                    <div class="cardContainer" v-for="card in cardsCredit">
+                        <div class="card__container">
+                            <div class="card__front" :id="'cardFront-' + card.id">
+                                <div class="card__front--bg"
+                                    :class="card.color == 'GOLD'? 'bgGOLD': card.color == 'SILVER'? 'bgSILVER' : 'bgTITANIUM' ">
+                                    <div class="front--bg--s1"
+                                        :class="card.color == 'GOLD'? 'borderGOLD': card.color == 'SILVER'? 'borderSILVER' : 'borderTITANIUM'  ">
+                                    </div>
+                                </div>
+                                <div class="card__brand" style="margin-top: 10px;">
+                                    <span class="card__brand--logo">
+                                        <img src="./assets/img/LB-removebg-preview (2).png" width="30" alt="LB">
+                                    </span>
+                                    <span class="card__brand--name font-normal">
+                                        LIGHTBANK
+                                    </span>
+                                </div>
+                                <div class="card__chip">
+                                    <img src="./assets/img/chip-removebg-preview.png" alt="chip">
+                                </div>
+                                <div class="card__extra">
+                                    <div class="card__extra--contactless">
+                                        <ion-icon name="wifi-sharp" style="font-size: 30px;"></ion-icon>
+                                    </div>
+                                </div>
+                                <div class="card__number"
+                                    :class="card.color == 'GOLD'? 'colorGOLD' : card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
+                                    {{card.number}}
+                                </div>
+                                <div class="card__payment d-flex flex-column">
+                                    <img src="./assets/img/visa-logo-removebg-preview.png" style="width: 50px;" alt="">
+                                    <span style="width: 50px; margin-left:5px;font-size: 12px;"
+                                        class="text-white">{{card.type}}</span>
+                                </div>
+                                <div class="card__user">
+                                    <span class="card__user--name  m-2">{{card.cardHolder}}</span>
+                                    <div class="card__user--valid">
+                                        <div class="card__user--valid-date  ">From. {{formatDate(card.fromDate)}}
+                                        </div>
+                                        <div class="card__user--valid-date " style="line-height: 30px;">Thru.
+                                            {{formatDate(card.thruDate)}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card__back"
+                                :class="card.color == 'GOLD'? 'bgGOLD': card.color == 'SILVER'? 'bgSILVER' : 'bgTITANIUM'  "
+                                :id="'cardBack-' + card.id">
+                                <div class="card__plast">
+                                </div>
+                                <div class="card__contact">
+                                    <p class="card__contact--txt m-0">Customer Service: 0855 0055 0055</p>
+                                    <p class="card__contact--txt m-0">www.lightbank.com</p>
+                                </div>
+                                <div class="card__strip"></div>
+                                <div class="card__company">
+                                    <div class="card__company--address">7741 Hayvenhurst Ave, Van Nuys, CA 91406 Los
+                                        Angeles
+                                        /
+                                        Californiya - USA</div>
+                                    <div class="card__company--msg">Lorem ipsum dolor sit amet consectetur adipisicing
+                                        elit.
+                                    </div>
+                                </div>
+                                <div class="card__cvc">
+                                    <div class="card__cvc--strip">
+                                    </div>
+                                    <span class="card__cvc--num"><span class="card__cvc--txt">{{card.cvv}}</span> CVV
+                                    </span>
+                                </div>
+                                <p class="card__cvc--warning"> NOT VALİD WİTHOUT AUTHORİZED SİGNATURE</p>
+                                <div class="card__stamp"></div>
+                                <div class="card--hr"></div>
+                                <div class="card__back--bottom"
+                                    :class="card.color == 'GOLD'? 'colorGOLD': card.color == 'SILVER'? 'colorSILVER' : 'colorTITANIUM'  ">
+                                    <p class="company-dec m-0">
+                                        LB
+                                    </p>
+                                    <p class="card--business m-0">
+                                        LIGHTBANK
+                                    </p>
+                                </div>
+                                <div class="card__back--shape"
+                                    :class="card.color == 'GOLD'? 'borderGOLD' : card.color == 'SILVER'? 'borderSILVER' : 'borderTITANIUM'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="mt-4" v-if="cards.length <= 0">You do not have any cards! <a class="d-block" href="./create-cards.html">Go to Create Card</a></h2>
+            </div>
+        </main>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="./cards.js"></script>
+</body>
+
+
+
+
+
+
+</html>

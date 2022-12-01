@@ -26,6 +26,7 @@ import static com.mindhub.homebanking.utils.CardUtils.getRandomNumberCard;
 import static java.util.stream.Collectors.toList;
 
 @RestController
+@CrossOrigin
 public class CardController {
 
     @Autowired
